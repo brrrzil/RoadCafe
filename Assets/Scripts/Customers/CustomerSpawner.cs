@@ -1,4 +1,3 @@
-// CustomerSpawner.cs
 using UnityEngine;
 using System.Collections;
 
@@ -9,10 +8,22 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private float maxSpawnInterval = 15f;
     [SerializeField] private float maxPollutionMultiplier = 2.5f;
 
+    public static CustomerSpawner Instance { get; private set; }
+
     private Transform spawnPoint;
 
     public static int ActiveCustomersCount { get; private set; }
     public static int TotalCustomersSpawned { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     private void Start()
     {

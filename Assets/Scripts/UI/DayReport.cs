@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class DayReport : MonoBehaviour
 {
@@ -10,9 +9,11 @@ public class DayReport : MonoBehaviour
     [SerializeField] private TMP_Text moneyEarnedText;
     [SerializeField] private TMP_Text moneySpentText;
     [SerializeField] private TMP_Text pollutionChangeText;
+    [SerializeField] private TMP_Text pollutionCurrentText;
+    [SerializeField] private TMP_Text squirrelMessageText;
     [SerializeField] private TMP_Text totalMoneyText;
     [SerializeField] private Button nextDayButton;
-    [SerializeField] private Button exitButton;    
+    [SerializeField] private Button exitButton;
 
     private void Start()
     {
@@ -39,7 +40,9 @@ public class DayReport : MonoBehaviour
         float moneyEarned = DayManager.Instance.GetMoneyEarnedToday();
         float moneySpent = DayManager.Instance.GetMoneySpentToday();
         float pollutionChange = DayManager.Instance.GetPollutionChangeToday();
+        float pollutionCurrent = Ecology.CurrentPollution;
         int currentDay = DayManager.Instance.GetCurrentDay();
+        bool squirrelCaught = DayManager.SquirrelCaughtToday;
 
         if (dayNumberText != null)
             dayNumberText.text = $"День {currentDay} завершён";
@@ -56,8 +59,36 @@ public class DayReport : MonoBehaviour
         if (pollutionChangeText != null)
         {
             string sign = pollutionChange >= 0 ? "+" : "";
-            pollutionChangeText.text = $"Загрязнение: {sign}{pollutionChange:F1}%";
+            pollutionChangeText.text = $"Изменение загрязнения: {sign}{pollutionChange:F1}%";
             pollutionChangeText.color = pollutionChange >= 0 ? Color.red : Color.green;
+        }
+
+        if (pollutionCurrentText != null)
+        {
+            pollutionCurrentText.text = $"Текущий уровень загрязнения: {pollutionCurrent:F1}%";
+
+            if (pollutionCurrent >= 90f)
+                pollutionCurrentText.color = Color.red;
+            else if (pollutionCurrent >= 70f)
+                pollutionCurrentText.color = new Color(1f, 0.5f, 0f);
+            else if (pollutionCurrent >= 40f)
+                pollutionCurrentText.color = Color.yellow;
+            else
+                pollutionCurrentText.color = Color.gray;
+        }
+
+        if (squirrelMessageText != null)
+        {
+            if (squirrelCaught)
+            {
+                squirrelMessageText.text = "Сегодня вы поймали белку!";
+                squirrelMessageText.color = Color.darkGray;
+            }
+            else
+            {
+                squirrelMessageText.text = "Сегодня вы не поймали белку";
+                squirrelMessageText.color = Color.darkGray;
+            }
         }
     }
 
@@ -91,10 +122,5 @@ public class DayReport : MonoBehaviour
         {
             DayManager.OnNewDayStarted -= OnNewDayStarted;
         }
-    }
-
-    private void OnEnable()
-    {
-        Debug.Log("DayReport OnEnable called");
     }
 }

@@ -12,11 +12,6 @@ public class GameStarter : MonoBehaviour
         if (existingCanvas == null && canvasPrefab != null)
         {
             Instantiate(canvasPrefab);
-            Debug.Log("Canvas created");
-        }
-        else if (existingCanvas != null)
-        {
-            Debug.Log("Canvas already exists, not creating duplicate");
         }
     }
 }

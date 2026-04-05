@@ -15,6 +15,7 @@ TagManager:
   - DinnerTable
   - TrashBin
   - CashierPoint
+  - CashRegister
   layers:
   - Default
   - TransparentFX

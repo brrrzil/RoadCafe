@@ -26,7 +26,10 @@ public abstract class Item : MonoBehaviour
     {
         isHeld = true;
         isOnGround = false;
-        outline.gameObject.SetActive(false);
+
+        if (outline != null)
+            outline.gameObject.SetActive(false);
+
         originalParent = transform.parent;
         transform.SetParent(holder);
         transform.localPosition = Vector3.zero;
@@ -41,8 +44,20 @@ public abstract class Item : MonoBehaviour
     {
         isHeld = false;
         isOnGround = true;
-        outline.gameObject.SetActive(true);
-        transform.SetParent(originalParent);
+
+        if (outline != null)
+            outline.gameObject.SetActive(true);
+
+        // Проверяем, существует ли originalParent, иначе оставляем без родителя
+        if (originalParent != null)
+        {
+            transform.SetParent(originalParent);
+        }
+        else
+        {
+            transform.SetParent(null);
+        }
+
         transform.position = dropPosition;
 
         if (itemCollider != null)

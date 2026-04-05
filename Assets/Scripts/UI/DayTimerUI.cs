@@ -15,12 +15,8 @@ public class DayTimerUI : MonoBehaviour
         if (DayManager.Instance != null)
         {
             DayManager.OnTimeUpdated += UpdateTimer;
-            DayManager.OnNewDayStarted += OnNewDayStarted; // Подписка на новый день
+            DayManager.OnNewDayStarted += OnNewDayStarted;
             UpdateTimer(DayManager.Instance.CurrentTimeRemaining);
-        }
-        else
-        {
-            Debug.LogError("DayManager instance not found!");
         }
     }
 
@@ -34,7 +30,7 @@ public class DayTimerUI : MonoBehaviour
 
         if (timerFill != null)
         {
-            float fillAmount = timeRemaining / 180f; // 180 секунд - длительность дня
+            float fillAmount = timeRemaining / 180f;
             timerFill.fillAmount = fillAmount;
 
             // Меняем цвет в зависимости от времени

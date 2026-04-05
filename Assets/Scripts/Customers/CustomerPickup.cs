@@ -19,8 +19,6 @@ public class CustomerPickup : MonoBehaviour
         {
             itemComp.transform.SetParent(holdPosition);
             itemComp.transform.position = holdPosition.transform.position;
-            //itemComp.transform.localPosition = holdPosition.localPosition;
-            //itemComp.transform.localRotation = Quaternion.identity;
             itemComp.transform.localScale = Vector3.one;
             itemComp.isHeld = true;
         }

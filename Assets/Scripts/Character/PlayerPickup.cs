@@ -151,12 +151,12 @@ public class PlayerPickup : MonoBehaviour
     {
         if (currentItem != null) return;
 
-        currentItem = squirrel;
-        SquirrelItem squirrelItem = squirrel.GetComponent<SquirrelItem>();
 
+        SquirrelItem squirrelItem = squirrel.GetComponent<SquirrelItem>();
         if (squirrelItem != null)
         {
             squirrelItem.PickUp(holdPosition);
+            currentItem = squirrel;
         }
     }
 
@@ -184,10 +184,16 @@ public class PlayerPickup : MonoBehaviour
             Vector3 dropPosition = transform.position + transform.forward * 1f;
             dropPosition.y = 0.1f;
 
-            SquirrelItem squirrelItem = currentItem.GetComponent<SquirrelItem>();
-            if (squirrelItem != null)
+            Item item = currentItem.GetComponent<Item>();
+            if (item != null)
             {
-                squirrelItem.Drop(dropPosition);
+                item.Drop(dropPosition);
+            }
+            else
+            {
+                // Для объектов без компонента Item
+                currentItem.transform.SetParent(null);
+                currentItem.transform.position = dropPosition;
             }
 
             currentItem = null;

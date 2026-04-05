@@ -52,37 +52,47 @@ public class Storage : MonoBehaviour
 
     public GameObject TakeItem()
     {
-        while (storedItems.Count > 0)
+        // Удаляем null объекты перед выдачей
+        CleanupNullItems();
+
+        if (storedItems.Count == 0) return null;
+
+        ItemData data = storedItems[0];
+        storedItems.RemoveAt(0);
+
+        if (data.gameObject == null)
         {
-            ItemData data = storedItems[0];
-            storedItems.RemoveAt(0);
-
-            if (data.gameObject == null)
-            {
-                UpdateDisplay();
-                continue;
-            }
-
-            data.gameObject.SetActive(true);
             UpdateDisplay();
-            return data.gameObject;
+            return TakeItem();
         }
 
+        data.gameObject.SetActive(true);
         UpdateDisplay();
-        return null;
+        return data.gameObject;
+    }
+
+    private void CleanupNullItems()
+    {
+        for (int i = storedItems.Count - 1; i >= 0; i--)
+        {
+            if (storedItems[i].gameObject == null)
+            {
+                storedItems.RemoveAt(i);
+            }
+        }
     }
 
     private void UpdateDisplay()
     {
+        // Очищаем иконки
         foreach (GameObject icon in itemIcons)
         {
-            if (icon != null)
-            {
-                Destroy(icon);
-            }
+            if (icon != null) Destroy(icon);
         }
-
         itemIcons.Clear();
+
+        // Очищаем null объекты
+        CleanupNullItems();
 
         if (storedItems.Count == 0) return;
 
@@ -100,13 +110,6 @@ public class Storage : MonoBehaviour
             {
                 int itemIndex = (row * itemsPerRow) + i;
                 if (itemIndex >= storedItems.Count) break;
-
-                if (storedItems[itemIndex].gameObject == null)
-                {
-                    storedItems.RemoveAt(itemIndex);
-                    UpdateDisplay();
-                    return;
-                }
 
                 GameObject icon = Instantiate(iconPrefab, transform);
                 float xPos = startX + (i * iconSpacing);

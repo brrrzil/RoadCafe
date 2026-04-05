@@ -1,54 +1,51 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SquirrelItem : MonoBehaviour
+public class SquirrelItem : Item
 {
-    private string itemName = "Белка";
-    private bool isHeld = false;
+    private Vector3 originalScale;
+    private Squirrel squirrel;
 
-    public void PickUp(Transform holder)
+    private void Start()
     {
-        isHeld = true;
+        originalScale = transform.localScale;
+        squirrel = GetComponent<Squirrel>();
+        itemName = "Белка";
+    }
 
+    // Отключаем стандартный OnMouseDown от Item
+    private new void OnMouseDown()
+    {
+        // Пусто - белка ловится только через Squirrel.OnMouseDown
+    }
+
+    public override void PickUp(Transform holder)
+    {
+        // Отключаем компоненты
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        if (agent != null)
-        {
-            agent.enabled = false;
-        }
+        if (agent != null) agent.enabled = false;
 
-        Squirrel squirrel = GetComponent<Squirrel>();
-        if (squirrel != null)
-        {
-            squirrel.enabled = false;
-        }
+        if (squirrel != null) squirrel.enabled = false;
 
-        Collider col = GetComponent<Collider>();
-        if (col != null)
-        {
-            col.enabled = false;
-        }
+        if (itemCollider != null) itemCollider.enabled = false;
 
+        // Привязываем к рукам
         transform.SetParent(holder);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
         transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
+        isHeld = true;
     }
 
-    public void Drop(Vector3 dropPosition)
+    public override void Drop(Vector3 dropPosition)
     {
-        isHeld = false;
-
         transform.SetParent(null);
         transform.position = dropPosition;
         transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        transform.localScale = new Vector3(0.1f, 0.1f,0.1f);
 
-
-        Collider col = GetComponent<Collider>();
-        if (col != null)
-        {
-            col.enabled = true;
-        }
+        if (itemCollider != null) itemCollider.enabled = true;
 
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         if (agent != null)
@@ -57,16 +54,12 @@ public class SquirrelItem : MonoBehaviour
             agent.isStopped = false;
         }
 
-        Squirrel squirrel = GetComponent<Squirrel>();
         if (squirrel != null)
         {
             squirrel.enabled = true;
             squirrel.ResetAfterDrop();
         }
-    }
 
-    public bool CanPickUp()
-    {
-        return !isHeld;
+        isHeld = false;
     }
 }

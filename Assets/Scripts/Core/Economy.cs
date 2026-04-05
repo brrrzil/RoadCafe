@@ -6,7 +6,7 @@ public class Economy : MonoBehaviour
     public static Economy Instance { get; private set; }
 
     [Header("Настройки")]
-    [SerializeField] private int startMoney = 500;
+    [SerializeField] private int startMoney = 300;
     [SerializeField] private int minMoney = 0;
     [SerializeField] private int maxMoney = 999999;
 

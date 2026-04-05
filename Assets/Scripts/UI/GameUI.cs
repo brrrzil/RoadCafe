@@ -18,6 +18,25 @@ public class GameUI : MonoBehaviour
     [SerializeField] private Color dangerColor = new Color(1f, 0.5f, 0f);
     [SerializeField] private Color criticalColor = Color.red;
 
+    private static GameUI instance;
+    public static GameUI Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindFirstObjectByType<GameUI>();
+                if (instance == null)
+                {
+                    GameObject obj = new GameObject("GameUI");
+                    instance = obj.AddComponent<GameUI>();
+                    DontDestroyOnLoad(obj);
+                }
+            }
+            return instance;
+        }
+    }
+
     private float targetSliderValue;
     private float currentSliderValue;
     private bool isCritical = false;
@@ -37,6 +56,13 @@ public class GameUI : MonoBehaviour
 
     private void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -50,14 +76,20 @@ public class GameUI : MonoBehaviour
             targetSliderValue = pollutionSlider.value;
             currentSliderValue = targetSliderValue;
         }
+
+        StartCoroutine(SmoothSliderRoutine());
     }
 
-    private void Update()
+    private IEnumerator SmoothSliderRoutine()
     {
-        if (pollutionSlider != null && Mathf.Abs(currentSliderValue - targetSliderValue) > 0.01f)
+        while (true)
         {
-            currentSliderValue = Mathf.Lerp(currentSliderValue, targetSliderValue, Time.deltaTime * 10f);
-            pollutionSlider.value = currentSliderValue;
+            if (pollutionSlider != null && Mathf.Abs(currentSliderValue - targetSliderValue) > 0.01f)
+            {
+                currentSliderValue = Mathf.Lerp(currentSliderValue, targetSliderValue, Time.deltaTime * 10f);
+                pollutionSlider.value = currentSliderValue;
+            }
+            yield return null;
         }
     }
 

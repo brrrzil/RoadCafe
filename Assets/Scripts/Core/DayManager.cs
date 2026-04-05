@@ -10,10 +10,11 @@ public class DayManager : MonoBehaviour
     private float timeRemaining;
     private bool isDayActive = true;
     private static int currentDay = 1;
-    public static int CurrentDay {  get { return currentDay; } }
 
     private float moneyAtStart;
     private float pollutionAtStart;
+
+    private static bool squirrelCaughtToday = false;
 
     public static event Action<float> OnTimeUpdated;
     public static event Action OnDayEnded;
@@ -23,6 +24,8 @@ public class DayManager : MonoBehaviour
 
     public float CurrentTimeRemaining => timeRemaining;
     public bool IsDayActive => isDayActive;
+    public static int CurrentDay => currentDay;
+    public static bool SquirrelCaughtToday => squirrelCaughtToday;
 
     private void Awake()
     {
@@ -82,6 +85,7 @@ public class DayManager : MonoBehaviour
         timeRemaining = dayDurationInSeconds;
         isDayActive = true;
         Time.timeScale = 1f;
+        squirrelCaughtToday = false;
 
         moneyAtStart = Economy.CurrentMoney;
         pollutionAtStart = Ecology.CurrentPollution;
@@ -92,13 +96,10 @@ public class DayManager : MonoBehaviour
         }
 
         OnNewDayStarted?.Invoke();
-        Debug.Log($"День {currentDay} начался");
     }
 
     private void EndDay()
     {
-        Debug.Log("EndDay called");
-
         isDayActive = false;
         Time.timeScale = 0f;
 
@@ -114,13 +115,8 @@ public class DayManager : MonoBehaviour
                 report.UpdateReportUI();
             }
         }
-        else
-        {
-            Debug.LogError("Report panel is null!");
-        }
 
         OnDayEnded?.Invoke();
-        Debug.Log($"День {currentDay} закончен");
     }
 
     private void StopAllCustomers()
@@ -174,6 +170,11 @@ public class DayManager : MonoBehaviour
     public int GetCurrentDay()
     {
         return currentDay;
+    }
+
+    public static void MarkSquirrelCaught()
+    {
+        squirrelCaughtToday = true;
     }
 
     public string FormatTime(float time)

@@ -143,7 +143,9 @@ public class Squirrel : MonoBehaviour
         }
         else if (clickCount == 30)
         {
-            Debug.Log("*белка устала и убежала*");
+            Debug.Log("*Вы поймали белку!*");
+
+            DayManager.MarkSquirrelCaught();
 
             PlayerPickup playerPickup = FindFirstObjectByType<PlayerPickup>();
             if (playerPickup != null)
@@ -152,33 +154,6 @@ public class Squirrel : MonoBehaviour
             }
         }
     }
-
-    //private System.Collections.IEnumerator JumpEffect()
-    //{
-    //    Vector3 originalPos = transform.position;
-    //    Vector3 jumpPos = originalPos + Vector3.up * 0.3f;
-    //    float duration = 0.15f;
-    //    float elapsed = 0f;
-
-    //    while (elapsed < duration)
-    //    {
-    //        float t = elapsed / duration;
-    //        transform.position = Vector3.Lerp(originalPos, jumpPos, t);
-    //        elapsed += Time.deltaTime;
-    //        yield return null;
-    //    }
-
-    //    elapsed = 0f;
-    //    while (elapsed < duration)
-    //    {
-    //        float t = elapsed / duration;
-    //        transform.position = Vector3.Lerp(jumpPos, originalPos, t);
-    //        elapsed += Time.deltaTime;
-    //        yield return null;
-    //    }
-
-    //    transform.position = originalPos;
-    //}
 
     private void OnEnable()
     {

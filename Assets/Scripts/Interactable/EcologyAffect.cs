@@ -36,8 +36,7 @@ public class EcologyAffect : MonoBehaviour
         PollutionBelow,
         PollutionAbove,
         HasItemInStorage,
-        IsProducing,
-        PlayerInRange
+        IsProducing
     }
 
     private void Start()
@@ -170,15 +169,6 @@ public class EcologyAffect : MonoBehaviour
             case ConditionType.IsProducing:
                 Production production = GetComponent<Production>();
                 return production != null && production.IsProducing;
-
-            case ConditionType.PlayerInRange:
-                Collider[] colliders = Physics.OverlapSphere(transform.position, 3f);
-                foreach (Collider col in colliders)
-                {
-                    if (col.CompareTag("Player"))
-                        return true;
-                }
-                return false;
 
             default:
                 return true;
