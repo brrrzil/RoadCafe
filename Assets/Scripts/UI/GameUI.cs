@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
 {
@@ -41,6 +42,11 @@ public class GameUI : MonoBehaviour
     private float currentSliderValue;
     private bool isCritical = false;
     private Coroutine blinkCoroutine;
+
+    public void HomeButton()
+    {
+        SceneManager.LoadScene(0);
+    }
 
     private void OnEnable()
     {

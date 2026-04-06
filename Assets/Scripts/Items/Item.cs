@@ -48,7 +48,6 @@ public abstract class Item : MonoBehaviour
         if (outline != null)
             outline.gameObject.SetActive(true);
 
-        // ѕровер€ем, существует ли originalParent, иначе оставл€ем без родител€
         if (originalParent != null)
         {
             transform.SetParent(originalParent);
@@ -77,6 +76,9 @@ public abstract class Item : MonoBehaviour
 
     private void OnMouseDown()
     {
+        // ѕропускаем, если это белка
+        if (this is SquirrelItem) return;
+
         if (CanPickUp())
         {
             PlayerPickup playerPickup = FindFirstObjectByType<PlayerPickup>();

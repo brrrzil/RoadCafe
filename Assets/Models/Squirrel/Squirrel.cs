@@ -18,6 +18,7 @@ public class Squirrel : MonoBehaviour
     private bool isWaiting = false;
     private int clickCount = 0;
     private AudioSource audioSource;
+    private bool isHeld = false;
 
     private void Start()
     {
@@ -43,6 +44,7 @@ public class Squirrel : MonoBehaviour
     private void Update()
     {
         if (isWaiting) return;
+        if (isHeld) return;
 
         if (agent != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
@@ -52,12 +54,17 @@ public class Squirrel : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        if (!isHeld)
+        {
+            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        }
     }
 
     private void MoveToRandomPoint()
     {
+        if (isHeld) return;
         if (treeTransform == null || agent == null) return;
+        if (!agent.isOnNavMesh || !agent.enabled) return;
 
         Vector3 randomPoint = GetRandomPointAroundTree();
 
@@ -91,6 +98,10 @@ public class Squirrel : MonoBehaviour
 
     private void StartWaiting()
     {
+        if (isHeld) return;
+        if (agent == null) return;
+        if (!agent.isOnNavMesh || !agent.enabled) return;
+
         isWaiting = true;
         agent.isStopped = true;
         float waitTime = Random.Range(minWaitTime, maxWaitTime);
@@ -99,6 +110,10 @@ public class Squirrel : MonoBehaviour
 
     private void EndWaiting()
     {
+        if (isHeld) return;
+        if (agent == null) return;
+        if (!agent.isOnNavMesh || !agent.enabled) return;
+
         isWaiting = false;
         agent.isStopped = false;
         MoveToRandomPoint();
@@ -108,6 +123,7 @@ public class Squirrel : MonoBehaviour
     {
         clickCount = 0;
         isWaiting = false;
+        isHeld = false;
 
         if (agent != null)
         {
@@ -116,8 +132,32 @@ public class Squirrel : MonoBehaviour
         }
     }
 
+    public void SetHeld(bool held)
+    {
+        isHeld = held;
+
+        if (agent != null)
+        {
+            if (held)
+            {
+                agent.isStopped = true;
+                agent.enabled = false;
+            }
+            else
+            {
+                agent.enabled = true;
+                if (agent.isOnNavMesh)
+                {
+                    agent.isStopped = false;
+                }
+            }
+        }
+    }
+
     private void OnMouseDown()
     {
+        if (isHeld) return;
+
         clickCount++;
 
         if (squeakSound != null && audioSource != null)
@@ -167,6 +207,9 @@ public class Squirrel : MonoBehaviour
 
     private void OnPollutionChanged(float pollution)
     {
-        gameObject.SetActive(pollution < 50f);
+        if (!isHeld)
+        {
+            gameObject.SetActive(pollution < 50f);
+        }
     }
 }

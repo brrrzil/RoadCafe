@@ -60,21 +60,12 @@ public class DayReport : MonoBehaviour
         {
             string sign = pollutionChange >= 0 ? "+" : "";
             pollutionChangeText.text = $"Изменение загрязнения: {sign}{pollutionChange:F1}%";
-            pollutionChangeText.color = pollutionChange >= 0 ? Color.red : Color.green;
+            pollutionChangeText.color = pollutionChange >= 0 ? Color.red : Color.darkGreen;
         }
 
         if (pollutionCurrentText != null)
         {
             pollutionCurrentText.text = $"Текущий уровень загрязнения: {pollutionCurrent:F1}%";
-
-            if (pollutionCurrent >= 90f)
-                pollutionCurrentText.color = Color.red;
-            else if (pollutionCurrent >= 70f)
-                pollutionCurrentText.color = new Color(1f, 0.5f, 0f);
-            else if (pollutionCurrent >= 40f)
-                pollutionCurrentText.color = Color.yellow;
-            else
-                pollutionCurrentText.color = Color.gray;
         }
 
         if (squirrelMessageText != null)
@@ -82,12 +73,12 @@ public class DayReport : MonoBehaviour
             if (squirrelCaught)
             {
                 squirrelMessageText.text = "Сегодня вы поймали белку!";
-                squirrelMessageText.color = Color.darkGray;
+                //squirrelMessageText.color = Color.darkGray;
             }
             else
             {
                 squirrelMessageText.text = "Сегодня вы не поймали белку";
-                squirrelMessageText.color = Color.darkGray;
+                //squirrelMessageText.color = Color.darkGray;
             }
         }
     }

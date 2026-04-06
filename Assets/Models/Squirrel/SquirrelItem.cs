@@ -13,19 +13,17 @@ public class SquirrelItem : Item
         itemName = "Белка";
     }
 
-    // Отключаем стандартный OnMouseDown от Item
-    private new void OnMouseDown()
-    {
-        // Пусто - белка ловится только через Squirrel.OnMouseDown
-    }
-
     public override void PickUp(Transform holder)
     {
+        // Уведомляем белку, что она в руках
+        if (squirrel != null)
+        {
+            squirrel.SetHeld(true);
+        }
+
         // Отключаем компоненты
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         if (agent != null) agent.enabled = false;
-
-        if (squirrel != null) squirrel.enabled = false;
 
         if (itemCollider != null) itemCollider.enabled = false;
 
@@ -43,7 +41,7 @@ public class SquirrelItem : Item
         transform.SetParent(null);
         transform.position = dropPosition;
         transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-        transform.localScale = new Vector3(0.1f, 0.1f,0.1f);
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 
         if (itemCollider != null) itemCollider.enabled = true;
 
@@ -56,8 +54,7 @@ public class SquirrelItem : Item
 
         if (squirrel != null)
         {
-            squirrel.enabled = true;
-            squirrel.ResetAfterDrop();
+            squirrel.SetHeld(false);
         }
 
         isHeld = false;
